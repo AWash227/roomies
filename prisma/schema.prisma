@@ -79,3 +79,45 @@ model Authenticator {
 
   @@id([userId, credentialID])
 }
+
+model Address {
+  id         String  @id @default(cuid())
+  buildingId String  @unique
+  street1    String
+  street2    String?
+  city       String?
+  state      String
+  zip        String
+
+  building Building @relation(fields: [buildingId], references: [id])
+}
+
+model Building {
+  id        String  @id @default(cuid())
+  name      String?
+  numFloors Int     @default(1)
+
+  address Address?
+  floors  Floor[]
+  rooms   Room[]
+}
+
+model Floor {
+  id         String @id @default(cuid())
+  buildingId String
+  code       String
+  index      Int
+
+  building Building @relation(fields: [buildingId], references: [id])
+  rooms    Room[]
+}
+
+model Room {
+  id         String @id @default(cuid())
+  buildingId String
+  floorId    String
+  code       String
+
+  building Building @relation(fields: [buildingId], references: [id])
+  floor    Floor    @relation(fields: [floorId], references: [id])
+}
