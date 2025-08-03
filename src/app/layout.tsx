@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/side-bar";
 import { cookies } from "next/headers";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "./api/auth/[...nextauth]/auth";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -33,19 +34,17 @@ export default async function RootLayout({
 	const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
 	return (
-		<html lang="en">
+		<html lang="en" className="w-full h-full">
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-full`}
 			>
 				<SessionProvider session={session}>
 					<SidebarProvider defaultOpen={defaultOpen}>
 						<AppSidebar />
-						<main>
-							<SidebarTrigger />
-							{children}
-						</main>
+						<SidebarTrigger />
+						<main className="w-full h-full">{children}</main>
+						<Toaster richColors />
 					</SidebarProvider>
-					{children}
 				</SessionProvider>
 			</body>
 		</html>
