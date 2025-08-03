@@ -7,6 +7,7 @@ import z from "zod";
 import { UserDetailsForm } from "@/components/user-details-form";
 import { db } from "@/lib/db";
 import { ChangePasswordForm } from "@/components/change-password-form";
+import { DeleteAccountForm } from "@/components/delete-account-form";
 // name
 // Email
 // image
@@ -48,18 +49,7 @@ export default async function Page() {
 						Destructive Actions
 					</h2>
 					<div className="flex justify-between">
-						<div>
-							<p className="text-destructive text-sm font-semibold">
-								Delete your account
-							</p>
-							<p className="text-muted-foreground text-xs">
-								Permanently delete your account.
-							</p>
-						</div>
-						<Button variant="destructive" size="sm">
-							<TrashIcon />
-							Delete Account
-						</Button>
+						<DeleteAccountForm id={session.user?.id} />
 					</div>
 				</div>
 			</div>

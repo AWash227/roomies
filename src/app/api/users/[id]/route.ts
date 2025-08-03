@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateUserSchema } from "./update-user.schema";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/utils";
 
 export const POST = async (
 	req: NextRequest,
@@ -22,10 +23,26 @@ export const POST = async (
 				{ status: 200 },
 			);
 		} catch (e) {
-			console.error(e);
+			logger.error(e);
 			return NextResponse.json({}, { status: 500 });
 		}
 	} else {
 		return NextResponse.json({}, { status: 400 });
+	}
+};
+
+// @TODO: Ensure the user is who they say they are before deleting
+export const DELETE = async (
+	req: NextRequest,
+	{ params }: { params: Promise<{ id: string }> },
+) => {
+	const { id } = await params;
+
+	try {
+		const user = await db.user.delete({ where: { id } });
+		return NextResponse.json({}, { status: 200 });
+	} catch (e) {
+		logger.error(e);
+		return NextResponse.json({}, { status: 500 });
 	}
 };

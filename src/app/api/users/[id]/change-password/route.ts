@@ -3,6 +3,7 @@ import { changePasswordSchema } from "./schema";
 import { db } from "@/lib/db";
 import { hash, verify } from "argon2";
 
+// @TODO: ensure the user who owns the account is the only one who can change their password
 export const POST = async (
 	req: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
@@ -14,7 +15,7 @@ export const POST = async (
 	if (parsed.success) {
 		const user = await db.user.findUnique({ where: { id } });
 		if (!user || !user.passwordHash)
-			// TODO: if the user doesn't already have a current password, what should we do here?
+			// @TODO: if the user doesn't already have a current password, what should we do here?
 			return NextResponse.json({}, { status: 404 }); // Best Practice?
 
 		const isVerified = await verify(
