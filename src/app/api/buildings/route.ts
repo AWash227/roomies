@@ -27,5 +27,13 @@ export const POST = async (req: NextRequest) => {
 	const { data } = parsed;
 
 	// Perform the operation
-	return await createBuilding(data);
+	try {
+		return NextResponse.json(await createBuilding(data), { status: 201 });
+	} catch (e) {
+		logger.error(e);
+		return NextResponse.json(
+			{ message: "Internal Server Error" },
+			{ status: 500 },
+		);
+	}
 };

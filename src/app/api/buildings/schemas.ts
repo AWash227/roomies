@@ -23,3 +23,6 @@ export const createBuildingSchema = z.object({
 	address: createAddressSchema,
 });
 export type CreateBuildingDto = z.infer<typeof createBuildingSchema>;
+
+export const editBuildingSchema = createBuildingSchema.partial();
+export type EditBuildingDto = z.infer<typeof editBuildingSchema>;

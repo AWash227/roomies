@@ -3,8 +3,10 @@ import { hash } from "argon2";
 import { NextRequest } from "next/server";
 import { GET, POST } from "./auth/[...nextauth]/auth";
 import { logger } from "@/lib/utils";
+import { fakerEN_US as f } from "@faker-js/faker";
 import { db } from "@/lib/db";
 import { Prisma } from "@prisma/client";
+import { CreateBuildingDto } from "./buildings/schemas";
 
 export const BASE_URL = "http://localhost:3000";
 export const TEST_USER_PASS = "testing123";
@@ -76,4 +78,19 @@ export const loginAndGetTestUserCookies = async () => {
 		jar.set(name, pair);
 	}
 	return Array.from(jar.values()).join("; ");
+};
+
+export const createFakeBuilding = () => {
+	const state = f.location.state({ abbreviated: true });
+	return {
+		name: `${f.person.lastName()} ${f.helpers.arrayElement(["Hall", "Theater", "Library"])}`,
+		address: {
+			street1: f.location.streetAddress(),
+			street2: f.location.secondaryAddress(),
+			city: f.location.city(),
+			state,
+			zip: f.location.zipCode({ state }),
+		},
+		numFloors: f.number.int({ min: 1, max: 256 }),
+	} satisfies CreateBuildingDto;
 };
