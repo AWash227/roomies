@@ -94,7 +94,7 @@ export const BuildingCreateForm = () => {
 			<Input id="address.zip" name="address.zip" placeholder="52352" />
 			<ErrorText errors={errors.properties?.address?.properties?.zip?.errors} />
 
-			<Button type="submit" disabled={isSubmitting}>
+			<Button type="submit" disabled={isSubmitting} className="w-full">
 				{isSubmitting ? (
 					<LoaderCircleIcon className="animate-spin" />
 				) : (

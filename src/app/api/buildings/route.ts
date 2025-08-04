@@ -3,9 +3,12 @@ import { auth } from "../auth/[...nextauth]/auth";
 import { logger } from "@/lib/utils";
 import { db } from "@/lib/db";
 import { createBuildingSchema } from "./schemas";
+import { createBuilding, getBuildings } from "./api";
 
 // Get all buildings
-export const GET = () => {};
+export const GET = async () => {
+	return NextResponse.json(await getBuildings());
+};
 
 // Create a building
 export const POST = async (req: NextRequest) => {
@@ -24,24 +27,5 @@ export const POST = async (req: NextRequest) => {
 	const { data } = parsed;
 
 	// Perform the operation
-	try {
-		const building = await db.building.create({
-			data: {
-				name: data.name,
-				numFloors: data.numFloors,
-				address: { create: data.address },
-			},
-			include: {
-				address: true,
-				floors: true,
-			},
-		});
-		return NextResponse.json(building, { status: 201 });
-	} catch (e) {
-		logger.error(e);
-		return NextResponse.json(
-			{ message: "Internal Server Error" },
-			{ status: 500 },
-		);
-	}
+	return await createBuilding(data);
 };
