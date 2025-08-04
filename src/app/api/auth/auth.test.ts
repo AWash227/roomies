@@ -5,14 +5,7 @@ import { hash } from "argon2";
 import { db } from "@/lib/db";
 import { User } from "@prisma/client";
 import { logger } from "@/lib/utils";
-
-const BASE_URL = "http://localhost:3000";
-const TEST_USER_PASS = "testing123";
-const TEST_USER = {
-	email: "test@email.com",
-	name: "TEST USER",
-	passwordHash: await hash(TEST_USER_PASS),
-};
+import { BASE_URL, TEST_USER, TEST_USER_PASS } from "../test-utils";
 
 describe("Auth", () => {
 	let persistedUser: User | null = null;
