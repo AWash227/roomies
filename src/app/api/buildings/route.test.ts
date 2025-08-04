@@ -54,7 +54,7 @@ describe("Building Create", () => {
 						cookie: cookie,
 					},
 				});
-				expect(res.status).toBe(200);
+				expect(res.status).toBe(201);
 			},
 		});
 	});

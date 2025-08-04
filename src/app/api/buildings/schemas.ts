@@ -11,7 +11,7 @@ export type CreateAddressDto = z.infer<typeof createAddressSchema>;
 
 export const createBuildingSchema = z.object({
 	name: z.string().default(""),
-	numFloors: z.int(),
+	numFloors: z.coerce.number(),
 	address: createAddressSchema,
 });
 export type CreateBuildingDto = z.infer<typeof createBuildingSchema>;

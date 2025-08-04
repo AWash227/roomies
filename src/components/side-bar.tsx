@@ -1,4 +1,5 @@
 import {
+	BuildingIcon,
 	HouseIcon,
 	LogInIcon,
 	LogOutIcon,
@@ -25,6 +26,11 @@ const items = [
 		title: "Home",
 		icon: HouseIcon,
 		url: "/",
+	},
+	{
+		title: "Buildings",
+		icon: BuildingIcon,
+		url: "/buildings",
 	},
 ];
 

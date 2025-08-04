@@ -7,6 +7,7 @@ import z from "zod";
 import React, { FormEvent } from "react";
 import { changePasswordSchema } from "@/app/api/users/[id]/change-password/schema";
 import { toast } from "sonner";
+import { ErrorText } from "./error-text";
 
 export const ChangePasswordForm = (props: { id?: string }) => {
 	const { id } = props;
@@ -55,22 +56,18 @@ export const ChangePasswordForm = (props: { id?: string }) => {
 				placeholder="Current Password"
 				type="password"
 			/>
-			<p className="text-destructive text-xs">
-				{errors.properties?.currentPassword?.errors.join(", ") ?? null}
-			</p>
+			<ErrorText errors={errors.properties?.currentPassword?.errors} />
 
 			<Input name="password" placeholder="New Password" type="password" />
-			<p className="text-destructive text-xs">
-				{errors.properties?.password?.errors.join(", ") ?? null}
-			</p>
+			<ErrorText errors={errors.properties?.password?.errors} />
+
 			<Input
 				name="passwordConfirm"
 				placeholder="Confirm New Password"
 				type="password"
 			/>
-			<p className="text-destructive text-xs">
-				{errors.properties?.passwordConfirm?.errors.join(", ") ?? null}
-			</p>
+			<ErrorText errors={errors.properties?.passwordConfirm?.errors} />
+
 			<Button size="sm" disabled={isSubmitting}>
 				{isSubmitting ? (
 					<LoaderCircleIcon className="animate-spin" />

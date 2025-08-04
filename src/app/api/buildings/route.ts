@@ -36,7 +36,7 @@ export const POST = async (req: NextRequest) => {
 				floors: true,
 			},
 		});
-		return NextResponse.json(building);
+		return NextResponse.json(building, { status: 201 });
 	} catch (e) {
 		logger.error(e);
 		return NextResponse.json(
