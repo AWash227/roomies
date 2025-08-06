@@ -2,7 +2,7 @@ import z from "zod";
 import { createBuildingSchema, editBuildingSchema } from "../schemas";
 import { auth } from "../../auth/[...nextauth]/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { editBuilding, getBuilding } from "../api";
+import { deleteBuilding, editBuilding, getBuilding } from "../api";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/utils";
 
@@ -51,4 +51,19 @@ export const PATCH = async (
 };
 
 // Deleting a building
-export const DELETE = () => {};
+export const DELETE = async (
+	_: NextRequest,
+	{ params }: { params: Promise<{ id: string }> },
+) => {
+	const { id } = await params;
+	try {
+		const building = await deleteBuilding(id);
+		return NextResponse.json(building);
+	} catch (e) {
+		console.error(e);
+		return NextResponse.json(
+			{ message: "Internal Server Error" },
+			{ status: 500 },
+		);
+	}
+};

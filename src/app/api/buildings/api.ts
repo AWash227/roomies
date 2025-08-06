@@ -13,6 +13,11 @@ export type BuildingPayload = Prisma.BuildingGetPayload<{
 	include: typeof include;
 }>;
 
+export const deleteBuilding = async (id: string) => {
+	const building = await db.building.delete({ where: { id }, include });
+	return building;
+};
+
 export const getBuilding = async (id: string) => {
 	const building = await db.building.findUnique({
 		where: { id },

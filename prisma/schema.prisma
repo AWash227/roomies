@@ -89,7 +89,7 @@ model Address {
   state      String
   zip        String
 
-  building Building @relation(fields: [buildingId], references: [id])
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 }
 
 model Building {
@@ -108,7 +108,7 @@ model Floor {
   code       String
   index      Int
 
-  building Building @relation(fields: [buildingId], references: [id])
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   rooms    Room[]
 }
 
@@ -118,6 +118,6 @@ model Room {
   floorId    String
   code       String
 
-  building Building @relation(fields: [buildingId], references: [id])
-  floor    Floor    @relation(fields: [floorId], references: [id])
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  floor    Floor    @relation(fields: [floorId], references: [id], onDelete: Cascade)
 }
