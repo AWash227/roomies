@@ -4,9 +4,26 @@ import { NextResponse } from "next/server";
 import { logger } from "@/lib/utils";
 import { Prisma, PrismaClient } from "@prisma/client";
 
+const include = {
+	floors: true,
+	address: true,
+} satisfies Prisma.BuildingInclude;
+
+export type BuildingPayload = Prisma.BuildingGetPayload<{
+	include: typeof include;
+}>;
+
+export const getBuilding = async (id: string) => {
+	const building = await db.building.findUnique({
+		where: { id },
+		include,
+	});
+	return building;
+};
+
 export const getBuildings = async () => {
 	return await db.building.findMany({
-		include: { address: true, floors: true },
+		include,
 	});
 };
 
@@ -17,10 +34,7 @@ export const createBuilding = async (data: CreateBuildingDto) => {
 			numFloors: data.numFloors,
 			address: { create: data.address },
 		},
-		include: {
-			address: true,
-			floors: true,
-		},
+		include,
 	});
 };
 

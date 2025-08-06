@@ -2,10 +2,20 @@
 import { EditIcon, TrashIcon } from "lucide-react";
 import { Button } from "./ui/button";
 
-export const BuildingActions = (props: { id: string }) => {
-	const { id } = props;
-	const onEditClick = () => {};
-	const onDeleteClick = () => {};
+export type BuildingActionsProps = {
+	id?: string;
+	onEditClick: (
+		e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+		id: string,
+	) => void;
+	onDeleteClick: (
+		e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+		id: string,
+	) => void;
+};
+
+export const BuildingActions = (props: BuildingActionsProps) => {
+	const { id, onEditClick, onDeleteClick } = props;
 
 	return (
 		<div className="space-x-2">
@@ -13,7 +23,7 @@ export const BuildingActions = (props: { id: string }) => {
 				variant="secondary"
 				size="icon"
 				className="w-7 h-7"
-				onClick={onEditClick}
+				onClick={id ? (e) => onEditClick(e, id) : undefined}
 			>
 				<EditIcon />
 			</Button>
@@ -21,7 +31,7 @@ export const BuildingActions = (props: { id: string }) => {
 				variant="secondary"
 				size="icon"
 				className="w-7 h-7"
-				onClick={onDeleteClick}
+				onClick={id ? (e) => onDeleteClick(e, id) : undefined}
 			>
 				<TrashIcon />
 			</Button>
