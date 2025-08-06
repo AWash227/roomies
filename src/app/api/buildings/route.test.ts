@@ -10,14 +10,16 @@ import {
 } from "../test-utils";
 import type { User } from "@prisma/client";
 
-describe("Building Create", () => {
+describe("/buildings", () => {
 	let cookie: string | null = null;
 	let user: User | null = null;
+	let buildingId: string | null = null;
 
 	beforeAll(async () => {
 		user = (await createTestUser()) ?? null;
 		if (!user) return;
 		cookie = await loginAndGetTestUserCookies();
+		expect(cookie).toBeTruthy();
 	});
 
 	afterAll(async () => {
@@ -26,36 +28,100 @@ describe("Building Create", () => {
 		}
 	});
 
-	it("returns 200 OK if you send a valid payload while logged in", async () => {
-		const state = f.location.state({ abbreviated: true });
+	describe("POST", () => {
+		it("returns 401 UNAUTHORIZED if you are not logged in", async () => {
+			await testApiHandler({
+				appHandler,
+				test: async ({ fetch }) => {
+					const res = await fetch({ method: "POST" });
+					expect(res.status).toBe(401);
+				},
+			});
+		});
 
-		const body: CreateBuildingDto = {
-			name: `${f.person.lastName()} ${f.helpers.arrayElement(["Hall", "Theater", "Library"])}`,
-			address: {
-				street1: f.location.streetAddress(),
-				street2: f.location.secondaryAddress(),
-				city: f.location.city(),
-				state,
-				zip: f.location.zipCode({ state }),
-			},
-			numFloors: f.number.int({ min: 1, max: 256 }),
-		};
+		it("returns 200 OK if you send a valid payload", async () => {
+			const state = f.location.state({ abbreviated: true });
 
-		await testApiHandler({
-			appHandler,
-			test: async ({ fetch }) => {
-				expect(cookie).toBeTruthy();
-				if (!cookie) return;
-				const res = await fetch({
-					method: "POST",
-					body: JSON.stringify(body),
-					headers: {
-						"Content-Type": "application/json",
-						cookie: cookie,
-					},
-				});
-				expect(res.status).toBe(201);
-			},
+			const body: CreateBuildingDto = {
+				name: `${f.person.lastName()} ${f.helpers.arrayElement(["Hall", "Theater", "Library"])}`,
+				address: {
+					street1: f.location.streetAddress(),
+					street2: f.location.secondaryAddress(),
+					city: f.location.city(),
+					state,
+					zip: f.location.zipCode({ state }),
+				},
+				numFloors: f.number.int({ min: 1, max: 256 }),
+			};
+
+			await testApiHandler({
+				appHandler,
+				test: async ({ fetch }) => {
+					if (!cookie) return;
+					const res = await fetch({
+						method: "POST",
+						body: JSON.stringify(body),
+						headers: {
+							"Content-Type": "application/json",
+							cookie: cookie,
+						},
+					});
+					expect(res.status).toBe(201);
+					const data = await res.json();
+					buildingId = data.id;
+				},
+			});
+		});
+
+		it("returns 400 BAD REQUEST if you send an invalid payload", async () => {
+			const body = {
+				name: 123,
+				address: {
+					city: f.location.city(),
+				},
+				numFloors: f.number.int({ min: 1, max: 256 }),
+				extraFieldThatShouldntBeHere: 92,
+			};
+
+			await testApiHandler({
+				appHandler,
+				test: async ({ fetch }) => {
+					if (!cookie) return;
+					const res = await fetch({
+						method: "POST",
+						body: JSON.stringify(body),
+						headers: {
+							"Content-Type": "application/json",
+							cookie: cookie,
+						},
+					});
+					expect(res.status).toBe(400);
+				},
+			});
+		});
+	});
+
+	describe("GET", () => {
+		it("returns 401 UNAUTHORIZED if you are not logged in", async () => {
+			await testApiHandler({
+				appHandler,
+				test: async ({ fetch }) => {
+					const res = await fetch({ method: "GET" });
+					expect(res.status).toBe(401);
+				},
+			});
+		});
+
+		it("returns 200 OK if you fetch buildings", async () => {
+			expect(buildingId).toBeTruthy();
+			await testApiHandler({
+				appHandler,
+				test: async ({ fetch }) => {
+					if (!cookie) return;
+					const res = await fetch({ method: "GET", headers: { cookie } });
+					expect(res.status).toBe(200);
+				},
+			});
 		});
 	});
 });

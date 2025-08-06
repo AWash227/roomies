@@ -1,5 +1,7 @@
 import z from "zod";
 
+export const idSchema = z.strictObject({ id: z.string() });
+
 export const createAddressSchema = z.object({
 	street1: z.string().min(1, { error: "Please enter a street address" }),
 	street2: z.string().nullable(),

@@ -1,39 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "../auth/[...nextauth]/auth";
 import { logger } from "@/lib/utils";
-import { db } from "@/lib/db";
 import { createBuildingSchema } from "./schemas";
 import { createBuilding, getBuildings } from "./api";
+import { withAuthn } from "../utils";
+import { errorResponse } from "../errors";
 
 // Get all buildings
-export const GET = async () => {
+export const GET = withAuthn(async () => {
 	return NextResponse.json(await getBuildings());
-};
+});
 
 // Create a building
-export const POST = async (req: NextRequest) => {
-	// Ensure they are logged in
-	const session = await auth();
-	if (!session)
-		return NextResponse.json({ message: "Not Authorized" }, { status: 401 });
-	// Ensure they are allowed
-	// @TODO: Add in authorization if necessary
-
-	// Validate the data that they sent
+export const POST = withAuthn(async (req: NextRequest) => {
 	const parsed = createBuildingSchema.safeParse(await req.json());
-	if (!parsed.success)
-		return NextResponse.json({ message: "Bad Request" }, { status: 400 });
-
+	if (!parsed.success) return errorResponse("BAD_REQUEST");
 	const { data } = parsed;
 
-	// Perform the operation
 	try {
-		return NextResponse.json(await createBuilding(data), { status: 201 });
+		const building = await createBuilding(data);
+		return NextResponse.json(building, { status: 201 });
 	} catch (e) {
 		logger.error(e);
-		return NextResponse.json(
-			{ message: "Internal Server Error" },
-			{ status: 500 },
-		);
+		return errorResponse("INTERNAL_SERVER_ERROR");
 	}
-};
+});

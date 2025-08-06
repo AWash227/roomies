@@ -1,69 +1,68 @@
-import z from "zod";
-import { createBuildingSchema, editBuildingSchema } from "../schemas";
-import { auth } from "../../auth/[...nextauth]/auth";
+import { editBuildingSchema, idSchema } from "../schemas";
 import { NextRequest, NextResponse } from "next/server";
 import { deleteBuilding, editBuilding, getBuilding } from "../api";
-import { db } from "@/lib/db";
 import { logger } from "@/lib/utils";
+import { withAuthn } from "../../utils";
+import { errorResponse } from "../../errors";
+import z from "zod";
 
-export const GET = async (
-	_: NextRequest,
-	{ params }: { params: Promise<{ id: string }> },
-) => {
-	const { id } = await params;
+export const GET = withAuthn(
+	async (_: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+		const parameters = idSchema.safeParse(await params);
+		if (!parameters.success) return errorResponse("INVALID_ID");
+		const { id } = parameters.data;
 
-	try {
-		const building = await getBuilding(id);
-		return NextResponse.json(building);
-	} catch (e) {
-		logger.error(e);
-		return NextResponse.json(
-			{ message: "Internal Server Error" },
-			{ status: 500 },
-		);
-	}
-};
+		try {
+			const building = await getBuilding(id);
+			if (!building) return errorResponse("NOT_FOUND");
+			return NextResponse.json(building);
+		} catch (e) {
+			logger.error(e);
+			return errorResponse("INTERNAL_SERVER_ERROR");
+		}
+	},
+);
 
 // Edit a building
-export const PATCH = async (
-	req: NextRequest,
-	{ params }: { params: Promise<{ id: string }> },
-) => {
-	const { id } = await params;
-	const data = await req.json();
-	// logged in?
-	const session = await auth();
-	if (!session)
-		return NextResponse.json(
-			{ message: "You are not logged in." },
-			{ status: 401 },
-		);
+export const PATCH = withAuthn(
+	async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+		const parameters = idSchema.safeParse(await params);
+		if (!parameters.success) return errorResponse("INVALID_ID");
+		const { id } = parameters.data;
 
-	// parsed?
-	const parsed = editBuildingSchema.safeParse(data);
-	if (!parsed.success)
-		return NextResponse.json({ message: "Invalid data" }, { status: 400 });
+		const data = await req.json();
 
-	// op
-	return NextResponse.json(await editBuilding(id, parsed.data), {
-		status: 200,
-	});
-};
+		// parsed?
+		const parsed = editBuildingSchema.safeParse(data);
+		if (!parsed.success)
+			return errorResponse("BAD_REQUEST", {
+				errors: z.treeifyError(parsed.error),
+			});
+
+		// op
+		const building = await editBuilding(id, parsed.data);
+		if (!building) return errorResponse("NOT_FOUND");
+
+		return NextResponse.json(building);
+	},
+);
 
 // Deleting a building
-export const DELETE = async (
-	_: NextRequest,
-	{ params }: { params: Promise<{ id: string }> },
-) => {
-	const { id } = await params;
-	try {
-		const building = await deleteBuilding(id);
-		return NextResponse.json(building);
-	} catch (e) {
-		console.error(e);
-		return NextResponse.json(
-			{ message: "Internal Server Error" },
-			{ status: 500 },
-		);
-	}
-};
+export const DELETE = withAuthn(
+	async (_: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+		const parameters = idSchema.safeParse(await params);
+		if (!parameters.success) return errorResponse("INVALID_ID");
+		const { id } = parameters.data;
+
+		try {
+			const building = await deleteBuilding(id);
+			return NextResponse.json(building);
+		} catch (e) {
+			if (e && typeof e === "object" && "code" in e && e.code === "P2025")
+				return errorResponse("NOT_FOUND");
+
+			logger.error(e);
+			return errorResponse("INTERNAL_SERVER_ERROR");
+		}
+	},
+);

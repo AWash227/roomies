@@ -49,11 +49,7 @@ export const editBuilding = async (id: string, data: EditBuildingDto) => {
 			where: { id },
 			include: { address: true },
 		});
-		if (!building)
-			return NextResponse.json(
-				{ message: "Building not found" },
-				{ status: 404 },
-			);
+		if (!building) return null;
 
 		const newBuilding: Prisma.BuildingUpdateInput = {
 			name: data.name ?? building.name,
