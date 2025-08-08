@@ -1,4 +1,4 @@
-import { StudentCreateForm } from "@/components/student-create-form";
+import { StudentCreateForm } from "@/components/forms/student-create-form";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,

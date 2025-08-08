@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { EditIcon, LoaderCircleIcon } from "lucide-react";
-import { BuildingCreateForm } from "./building-create-form";
+import { BuildingCreateForm } from "./forms/building-create-form";
 import React from "react";
 import { toast } from "sonner";
 import { Building } from "@prisma/client";
@@ -19,7 +19,7 @@ import {
 	EditBuildingDto,
 } from "@/app/api/buildings/schemas";
 import type { BuildingPayload } from "@/app/api/buildings/api";
-import { BuildingEditForm } from "./building-edit-form";
+import { BuildingEditForm } from "./forms/building-edit-form";
 
 export const EditBuildingDialog = (props: {
 	id?: string;

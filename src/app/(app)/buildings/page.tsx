@@ -1,4 +1,4 @@
-import { BuildingCreateForm } from "@/components/building-create-form";
+import { BuildingCreateForm } from "@/components/forms/building-create-form";
 import { getBuildings } from "@/app/api/buildings/api";
 import {
 	Dialog,

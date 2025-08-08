@@ -1,17 +1,24 @@
 "use client";
 import React, { FormEvent } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { unflatten } from "flat";
 import {
 	CreateBuildingDto,
-	createBuildingSchema,
+	EditBuildingDto,
+	editBuildingSchema,
 } from "@/app/api/buildings/schemas";
 import z from "zod";
-import { LoaderCircleIcon, PlusCircleIcon } from "lucide-react";
+import { EditIcon, LoaderCircleIcon } from "lucide-react";
 import { toast } from "sonner";
-import { BuildingFields } from "./fields/building";
+import { BuildingFields } from "../fields/building";
+import { useRouter } from "next/navigation";
 
-export const BuildingCreateForm = () => {
+export const BuildingEditForm = (props: {
+	id: string;
+	defaultValues?: EditBuildingDto;
+}) => {
+	const { id, defaultValues } = props;
+	const router = useRouter();
 	const [isSubmitting, setIsSubmitting] = React.useState(false);
 	const [errors, setErrors] = React.useState<
 		ReturnType<typeof z.treeifyError<CreateBuildingDto>>
@@ -22,35 +29,36 @@ export const BuildingCreateForm = () => {
 		const form = e.currentTarget;
 		const formData = new FormData(form);
 		const data = unflatten(Object.fromEntries(formData.entries()));
-		const parsed = createBuildingSchema.safeParse(data);
+		const parsed = editBuildingSchema.safeParse(data);
 		if (!parsed.success) {
 			setErrors(z.treeifyError(parsed.error));
 			return;
 		}
 
 		setIsSubmitting(true);
-		const res = await fetch("/api/buildings", {
-			method: "POST",
+		const res = await fetch(`/api/buildings/${id}`, {
+			method: "PATCH",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(parsed.data),
 		});
 		setIsSubmitting(false);
-		if (res.status === 201) {
-			toast.success("Successfully created building.");
+		if (res.status === 200) {
+			toast.success("Successfully edited building.");
 			form.reset();
+			router.refresh();
 		} else {
-			toast.error("Failed to create building.");
+			toast.error("Failed to edit building.");
 		}
 	};
 
 	return (
 		<form onSubmit={onSubmit} className="space-y-2">
-			<BuildingFields errors={errors} />
+			<BuildingFields defaultValues={defaultValues} errors={errors} />
 			<Button type="submit" disabled={isSubmitting} className="w-full">
 				{isSubmitting ? (
 					<LoaderCircleIcon className="animate-spin" />
 				) : (
-					<PlusCircleIcon />
+					<EditIcon />
 				)}
 				Submit
 			</Button>

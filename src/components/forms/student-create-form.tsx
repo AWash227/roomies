@@ -1,8 +1,8 @@
 "use client";
 
 import React, { FormEvent } from "react";
-import { StudentFields } from "./fields/student";
-import { Button } from "./ui/button";
+import { StudentFields } from "../fields/student";
+import { Button } from "../ui/button";
 import z from "zod";
 import { createStudentSchema } from "@/app/api/students/schema";
 import { Loader2Icon, PlusCircleIcon } from "lucide-react";
