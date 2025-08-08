@@ -11,6 +11,7 @@ import z from "zod";
 import { ErrorText } from "./error-text";
 
 export const SignUpForm = () => {
+	const [emailTaken, setEmailTaken] = React.useState(false);
 	const [errors, setErrors] = React.useState<
 		ReturnType<typeof z.treeifyError<z.infer<typeof signUpSchema>>>
 	>({ errors: [] });
@@ -18,6 +19,7 @@ export const SignUpForm = () => {
 	const router = useRouter();
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setEmailTaken(false);
 
 		const formData = new FormData(e.currentTarget);
 		const data = Object.fromEntries(formData);
@@ -27,6 +29,7 @@ export const SignUpForm = () => {
 			setErrors(z.treeifyError(parsed.error));
 			return;
 		}
+		setErrors({ errors: [] });
 
 		const res = await fetch("/api/auth/sign-up", {
 			method: "POST",
@@ -34,12 +37,12 @@ export const SignUpForm = () => {
 			body: JSON.stringify(parsed.data),
 		});
 
-		if (res.redirected) {
-			window.location.assign(res.url);
+		if (res.status === 409) {
+			setEmailTaken(true);
 		}
 
-		if (res.status === 500) {
-			router.push("/auth-error");
+		if (res.status === 200) {
+			router.push("/sign-in");
 		}
 	};
 
@@ -47,7 +50,12 @@ export const SignUpForm = () => {
 		<form className="flex flex-col space-y-2" onSubmit={onSubmit}>
 			<Label htmlFor="email">Email</Label>
 			<Input id="email" type="text" name="email" placeholder="john@acme.com" />
-			<ErrorText errors={errors.properties?.email?.errors} />
+			<ErrorText
+				errors={[
+					...(errors.properties?.email?.errors ?? []),
+					...(emailTaken ? ["Email is Already Taken"] : []),
+				]}
+			/>
 			<Label htmlFor="password">Password</Label>
 			<Input
 				id="password"

@@ -6,8 +6,4 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export const logger = pino({
-	transport: {
-		target: "pino-pretty",
-	},
-});
+export const logger = pino({});

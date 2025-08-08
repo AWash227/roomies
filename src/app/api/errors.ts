@@ -36,6 +36,12 @@ export const ERRORS = {
 		message: "The provided search parameters were not valid.",
 		status: 400,
 	},
+	EMAIL_TAKEN: {
+		code: "EMAIL_TAKEN",
+		message:
+			"The email you are attempting to use is already in use. Try signing in instead.",
+		status: 409,
+	},
 };
 
 export function errorResponse(
