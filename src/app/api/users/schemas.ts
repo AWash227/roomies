@@ -6,7 +6,4 @@ export const createUserSchema = z.object({
 	role: z.enum(["STUDENT", "STAFF"]),
 });
 
-export const updateUserSchema = z.object({
-	name: z.string(),
-	email: z.email(),
-});
+export const updateUserSchema = createUserSchema.partial();

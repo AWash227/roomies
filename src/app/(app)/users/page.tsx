@@ -1,4 +1,5 @@
 import { UserCreateForm } from "@/components/forms/user-create-form";
+import { InteractiveUsersTable } from "@/components/tables/interactive-users-table";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -7,7 +8,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { UsersTable } from "@/components/users-table";
 import { db } from "@/lib/db";
 import { PlusCircleIcon } from "lucide-react";
 
@@ -39,7 +39,7 @@ export default async function Page() {
 					</DialogContent>
 				</Dialog>
 			</div>
-			<UsersTable users={users} />
+			<InteractiveUsersTable users={users} />
 		</div>
 	);
 }

@@ -24,6 +24,7 @@ export const PUT = withAuthn(
 					{
 						id: user.id,
 						name: user.name,
+						role: user.role,
 						email: user.email,
 						image: user.image,
 					},
