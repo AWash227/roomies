@@ -8,11 +8,13 @@ import {
 } from "@/components/ui/table";
 import { IdActions, type IdActionsProps } from "@/components/building-actions";
 import type { BuildingPayload } from "@/app/api/buildings/api";
+import { useRouter } from "next/navigation";
 
 export type BuildingTableProps = {
 	buildings: BuildingPayload[];
 } & Omit<IdActionsProps, "id">;
 export const BuildingTable = (props: BuildingTableProps) => {
+	const router = useRouter();
 	const { buildings, onEditClick, onDeleteClick } = props;
 	return (
 		<Table>
@@ -25,7 +27,10 @@ export const BuildingTable = (props: BuildingTableProps) => {
 			</TableHeader>
 			<TableBody>
 				{buildings.map((b) => (
-					<TableRow key={b.id}>
+					<TableRow
+						key={b.id}
+						onClick={() => router.push(`/buildings/${b.id}`)}
+					>
 						<TableCell>{b.name}</TableCell>
 						<TableCell>
 							{[
