@@ -41,8 +41,6 @@ export const BuildingCreateForm = () => {
 		} else {
 			toast.error("Failed to create building.");
 		}
-
-		console.log(data);
 	};
 
 	return (

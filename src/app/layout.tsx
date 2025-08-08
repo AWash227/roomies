@@ -29,9 +29,6 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }>) {
 	const session = await auth();
-	console.log(session);
-	const cookieStore = await cookies();
-	const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
 	return (
 		<html lang="en" className="w-full h-full">
@@ -39,12 +36,8 @@ export default async function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-full`}
 			>
 				<SessionProvider session={session}>
-					<SidebarProvider defaultOpen={defaultOpen}>
-						<AppSidebar />
-						<SidebarTrigger />
-						<main className="w-full h-full">{children}</main>
-						<Toaster richColors />
-					</SidebarProvider>
+					{children}
+					<Toaster richColors />
 				</SessionProvider>
 			</body>
 		</html>

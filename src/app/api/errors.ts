@@ -31,6 +31,11 @@ export const ERRORS = {
 		message: "The provided ID is not valid.",
 		status: 400,
 	},
+	INVALID_SEARCH_PARAMS: {
+		code: "INVALID_SEARCH_PARAMS",
+		message: "The provided search parameters were not valid.",
+		status: 400,
+	},
 };
 
 export function errorResponse(

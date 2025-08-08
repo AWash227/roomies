@@ -1,5 +1,5 @@
 import { BuildingCreateForm } from "@/components/building-create-form";
-import { getBuildings } from "../api/buildings/api";
+import { getBuildings } from "@/app/api/buildings/api";
 import {
 	Dialog,
 	DialogContent,
@@ -11,8 +11,11 @@ import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import React from "react";
 import { InteractiveBuildingTable } from "@/components/building-interactive-table";
+import { auth, signIn } from "@/app/api/auth/[...nextauth]/auth";
 
 export default async function Page() {
+	const session = await auth();
+	if (!session) return signIn();
 	const buildings = await getBuildings();
 
 	return (

@@ -3,15 +3,7 @@ import z, { ZodError } from "zod";
 import { hash } from "argon2";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/utils";
-
-export const signUpSchema = z.object({
-	email: z.email({ error: "Email is required" }).min(1, "Email is required"),
-	password: z
-		.string({ error: "Password is required" })
-		.min(1, "Password is required")
-		.min(8, "Password must be more than 8 characters")
-		.max(256, "Password must be less than 256 characters"),
-});
+import { signUpSchema } from "../schema";
 
 export const POST = async (req: NextRequest) => {
 	try {
@@ -26,7 +18,6 @@ export const POST = async (req: NextRequest) => {
 			},
 		});
 
-		logger.info("New User added");
 		//Sign the user in
 		return NextResponse.json({}, { status: 200 });
 	} catch (e) {

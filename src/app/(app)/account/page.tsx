@@ -1,8 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { EditIcon, RotateCcwKeyIcon, TrashIcon } from "lucide-react";
-import type { User } from "next-auth";
-import { auth } from "../api/auth/[...nextauth]/auth";
+import { auth } from "@/app/api/auth/[...nextauth]/auth";
 import z from "zod";
 import { UserDetailsForm } from "@/components/user-details-form";
 import { db } from "@/lib/db";

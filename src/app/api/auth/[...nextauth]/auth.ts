@@ -5,6 +5,7 @@ import { verify } from "argon2";
 import { db } from "@/lib/db";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { logger } from "@/lib/utils";
+import type { Provider } from "next-auth/providers";
 
 export const signInSchema = z.object({
 	email: z.email({ error: "Email is required" }).min(1, "Email is required"),
@@ -15,9 +16,62 @@ export const signInSchema = z.object({
 		.max(256, "Password must be less than 256 characters"),
 });
 
+const providers: Provider[] = [
+	Credentials({
+		credentials: {
+			email: {
+				type: "email",
+				label: "Email",
+				placeholder: "johndoe@gmail.com",
+			},
+			password: {
+				type: "password",
+				label: "Password",
+				placeholder: "*****",
+			},
+		},
+		authorize: async (credentials) => {
+			try {
+				const { email, password } = await signInSchema.parseAsync(credentials);
+
+				const user = await db.user.findFirst({ where: { email } });
+				if (!user) throw new Error("Couldn't find user with email.");
+				if (!user.passwordHash)
+					throw new Error("User doesn't have a password set up. Abort login.");
+
+				if (await verify(user.passwordHash, password)) {
+					return {
+						id: user.id,
+						email: user.email,
+						image: user.image,
+						name: user.name,
+					};
+				}
+				return null;
+			} catch (e) {
+				logger.error(e);
+				return null;
+			}
+		},
+	}),
+];
+
+export const providerMap = providers
+	.map((provider) => {
+		if (typeof provider === "function") {
+			const providerData = provider();
+			return { id: providerData.id, name: providerData.name };
+		} else {
+			return { id: provider.id, name: provider.name };
+		}
+	})
+	.filter((provider) => provider.id !== "credentials");
+
 const adapter = PrismaAdapter(db);
 export const {
 	handlers: { GET, POST },
+	signIn,
+	signOut,
 	auth,
 } = NextAuth({
 	debug: true,
@@ -35,46 +89,9 @@ export const {
 			return session;
 		},
 	},
-	providers: [
-		Credentials({
-			credentials: {
-				email: {
-					type: "email",
-					label: "Email",
-					placeholder: "johndoe@gmail.com",
-				},
-				password: {
-					type: "password",
-					label: "Password",
-					placeholder: "*****",
-				},
-			},
-			authorize: async (credentials) => {
-				try {
-					const { email, password } =
-						await signInSchema.parseAsync(credentials);
-
-					const user = await db.user.findFirst({ where: { email } });
-					if (!user) throw new Error("Couldn't find user with email.");
-					if (!user.passwordHash)
-						throw new Error(
-							"User doesn't have a password set up. Abort login.",
-						);
-
-					if (await verify(user.passwordHash, password)) {
-						return {
-							id: user.id,
-							email: user.email,
-							image: user.image,
-							name: user.name,
-						};
-					}
-					return null;
-				} catch (e) {
-					logger.error(e);
-					return null;
-				}
-			},
-		}),
-	],
+	pages: {
+		signIn: "/sign-in",
+		newUser: "/",
+	},
+	providers,
 });

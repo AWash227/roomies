@@ -49,8 +49,6 @@ export const BuildingEditForm = (props: {
 		} else {
 			toast.error("Failed to edit building.");
 		}
-
-		console.log(data);
 	};
 
 	return (
