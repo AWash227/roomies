@@ -43,11 +43,6 @@ const items = [
 		url: "/buildings",
 	},
 	{
-		title: "Students",
-		icon: GraduationCapIcon,
-		url: "/students",
-	},
-	{
 		title: "Users",
 		icon: UsersIcon,
 		url: "/users",
