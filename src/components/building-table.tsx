@@ -29,7 +29,10 @@ export const BuildingTable = (props: BuildingTableProps) => {
 				{buildings.map((b) => (
 					<TableRow
 						key={b.id}
-						onClick={() => router.push(`/buildings/${b.id}`)}
+						onClick={(e) => {
+							e.stopPropagation();
+							router.push(`/buildings/${b.id}`);
+						}}
 					>
 						<TableCell>{b.name}</TableCell>
 						<TableCell>
