@@ -6,15 +6,12 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import {
-	BuildingActions,
-	type BuildingActionsProps,
-} from "@/components/building-actions";
+import { IdActions, type IdActionsProps } from "@/components/building-actions";
 import type { BuildingPayload } from "@/app/api/buildings/api";
 
 export type BuildingTableProps = {
 	buildings: BuildingPayload[];
-} & Omit<BuildingActionsProps, "id">;
+} & Omit<IdActionsProps, "id">;
 export const BuildingTable = (props: BuildingTableProps) => {
 	const { buildings, onEditClick, onDeleteClick } = props;
 	return (
@@ -44,7 +41,7 @@ export const BuildingTable = (props: BuildingTableProps) => {
 						</TableCell>
 						<TableCell>{b.numFloors.toLocaleString()}</TableCell>
 						<TableCell>
-							<BuildingActions
+							<IdActions
 								id={b.id}
 								onEditClick={onEditClick}
 								onDeleteClick={onDeleteClick}

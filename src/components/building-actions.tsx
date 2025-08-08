@@ -2,7 +2,7 @@
 import { EditIcon, TrashIcon } from "lucide-react";
 import { Button } from "./ui/button";
 
-export type BuildingActionsProps = {
+export type IdActionsProps = {
 	id?: string;
 	onEditClick: (
 		e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
@@ -14,7 +14,7 @@ export type BuildingActionsProps = {
 	) => void;
 };
 
-export const BuildingActions = (props: BuildingActionsProps) => {
+export const IdActions = (props: IdActionsProps) => {
 	const { id, onEditClick, onDeleteClick } = props;
 
 	return (

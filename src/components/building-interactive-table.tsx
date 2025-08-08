@@ -3,7 +3,7 @@
 import React from "react";
 import { BuildingTable, BuildingTableProps } from "./building-table";
 import { EditBuildingDialog } from "./edit-building-dialog";
-import { BuildingActionsProps } from "./building-actions";
+import { IdActionsProps } from "./building-actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -15,15 +15,12 @@ export const InteractiveBuildingTable = (
 	const [selectedId, setSelectedId] = React.useState<string | null>(null);
 	const [open, setOpen] = React.useState(false);
 
-	const onEditClick: BuildingActionsProps["onEditClick"] = (e, id) => {
+	const onEditClick: IdActionsProps["onEditClick"] = (e, id) => {
 		setSelectedId(id);
 		setOpen(true);
 	};
 
-	const onDeleteClick: BuildingActionsProps["onDeleteClick"] = async (
-		e,
-		id,
-	) => {
+	const onDeleteClick: IdActionsProps["onDeleteClick"] = async (e, id) => {
 		toast.warning("Are you sure you want to delete this building?", {
 			action: {
 				label: "Delete",
