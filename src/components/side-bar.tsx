@@ -1,5 +1,6 @@
 import {
 	BuildingIcon,
+	CircleUserIcon,
 	GraduationCapIcon,
 	HouseIcon,
 	LogInIcon,
@@ -23,6 +24,13 @@ import { SidebarSignInButton } from "./sidebar-sign-in-button";
 import { auth } from "@/app/api/auth/[...nextauth]/auth";
 import { SidebarSignUpButton } from "./sidebar-sign-up-button";
 
+const applicationItems = [
+	{
+		title: "Account",
+		icon: CircleUserIcon,
+		url: "/account",
+	},
+];
 const items = [
 	{
 		title: "Home",
@@ -52,7 +60,7 @@ export const AppSidebar = () => {
 		<Sidebar>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>Application</SidebarGroupLabel>
+					<SidebarGroupLabel>Resources</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
 							{items.map((item) => (
@@ -70,6 +78,23 @@ export const AppSidebar = () => {
 				</SidebarGroup>
 			</SidebarContent>
 			<SidebarFooter>
+				<SidebarGroup>
+					<SidebarGroupLabel>Application</SidebarGroupLabel>
+					<SidebarGroupContent>
+						<SidebarMenu>
+							{applicationItems.map((item) => (
+								<SidebarMenuItem key={item.title}>
+									<SidebarMenuButton asChild>
+										<a href={item.url}>
+											<item.icon />
+											<span>{item.title}</span>
+										</a>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							))}
+						</SidebarMenu>
+					</SidebarGroupContent>
+				</SidebarGroup>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarSignUpButton />

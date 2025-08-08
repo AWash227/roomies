@@ -1,4 +1,4 @@
-import { auth } from "@/app/api/auth/[...nextauth]/auth";
+import { auth, signIn } from "@/app/api/auth/[...nextauth]/auth";
 import z from "zod";
 import { UserDetailsForm } from "@/components/user-details-form";
 import { db } from "@/lib/db";
@@ -13,6 +13,7 @@ import { DeleteAccountForm } from "@/components/delete-account-form";
 
 export default async function Page() {
 	const session = await auth();
+	if (!session) return signIn();
 	if (!session?.user) return null;
 	const user = await db.user.findUnique({ where: { id: session?.user.id } });
 

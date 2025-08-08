@@ -30,7 +30,7 @@ export const UserDetailsForm = (props: {
 		if (parsed.success) {
 			setIsSubmitting(true);
 			await fetch(`/api/users/${id}`, {
-				method: "POST",
+				method: "PUT",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(parsed.data),
 			});

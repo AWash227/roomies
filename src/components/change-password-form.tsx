@@ -28,7 +28,7 @@ export const ChangePasswordForm = (props: { id?: string }) => {
 
 		if (parsed.success) {
 			setIsSubmitting(true);
-			const res = await fetch(`/api/users/${id}/change-password`, {
+			const res = await fetch(`/api/account/change-password`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
