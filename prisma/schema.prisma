@@ -121,3 +121,11 @@ model Room {
   building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   floor    Floor    @relation(fields: [floorId], references: [id], onDelete: Cascade)
 }
+
+model Student {
+  id          String  @id @default(cuid())
+  firstName   String
+  lastName    String
+  email       String
+  phoneNumber String?
+}
