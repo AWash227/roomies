@@ -5,6 +5,7 @@ import {
 	LogInIcon,
 	LogOutIcon,
 	UserRoundPlusIcon,
+	UsersIcon,
 } from "lucide-react";
 import {
 	Sidebar,
@@ -37,6 +38,11 @@ const items = [
 		title: "Students",
 		icon: GraduationCapIcon,
 		url: "/students",
+	},
+	{
+		title: "Users",
+		icon: UsersIcon,
+		url: "/users",
 	},
 ];
 

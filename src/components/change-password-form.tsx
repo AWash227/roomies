@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import z from "zod";
 import React, { FormEvent } from "react";
-import { changePasswordSchema } from "@/app/api/users/[id]/change-password/schema";
+import { changePasswordSchema } from "@/app/api/account/change-password/schema";
 import { toast } from "sonner";
 import { ErrorText } from "./error-text";
 
